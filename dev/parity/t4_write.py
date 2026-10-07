@@ -25,7 +25,6 @@ SCEN = [  # slug, panel page, tab, steps
  ('info','mgmt','info',[('append','#in-intro',' ·T'),('clickText','ذخیرهٔ اطلاعات')]),
  ('users','users','',[('click','#us-add'),('fill','#nu-name','عضو '+T),('fill','#nu-user','paritytest'),('fill','#nu-pass','Parity-Pass-9'),('click','#nu-save')]),
  ('subs','subs','',[('click','[data-sub="p2"]'),('selectIdx','#sub-m-plan',1),('click','#sub-m-save')]),
- ('display-settings','settings','',[('click','#st-all-off'),('click','#st-all-on')]),
  ('backup','backup','',[('click','#gab-slot')]),
  ('messages','messages','',[('click','[data-pmch="both"]'),('fill','#pm-subject','پیام '+T),('fill','#pm-body','متن '+T),('click','#pm-all'),('click','#pm-send')]),
 ]

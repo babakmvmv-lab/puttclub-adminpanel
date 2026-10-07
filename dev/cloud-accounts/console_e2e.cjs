@@ -72,6 +72,15 @@ const ok = (c, m) => { if (c) pass++; else fail++; console.log((c ? 'PASS' : 'FA
   await fr.waitForTimeout(5500);
   const kv2 = cloud.log.filter(e => e.kind === 'sync' && e.action === 'kv' && e.keys.includes('ga_results'));
   ok(kv2.length > 0 && kv2.every(e => e.uid === 'uid-owner@example.test' && e.status === 200), 'تغییر مدیر با توکن کنسول ذخیره شد');
+  // «تنظیمات نمایش» در «اشتراک‌ها» ادغام شد: آیتم منو حذف، نشانی قدیمی → ماتریس دسترسی
+  ok(await page.evaluate(() => !document.querySelector('a[href="#/m/display-settings"]')), 'منوی «مدیریت»: آیتم «تنظیمات نمایش» حذف شده است');
+  await page.evaluate(() => { location.hash = '#/m/display-settings'; });
+  await page.waitForTimeout(2500);
+  const fr2 = await (await page.waitForSelector('#academyHost iframe')).contentFrame();
+  await fr2.waitForFunction(() => document.getElementById('acx-grid') && document.querySelectorAll('.acx-row.lv0').length === 12, null, { timeout: 20000 }).catch(() => {});
+  const mx = await fr2.evaluate(() => ({ rows: document.querySelectorAll('.acx-row.lv0').length, plans: document.querySelectorAll('.acx-head .acx-plan').length, hash: location.hash }));
+  ok(mx.rows === 12 && mx.plans === 5, 'نشانی قدیمی #/m/display-settings → «اشتراک‌ها» با ماتریس ۱۲ صفحه × ۵ پلن ' + JSON.stringify(mx));
+  ok(/#\/m\/(subs|display-settings)$/.test(await page.evaluate(() => location.hash)), 'مسیر کنسول روی اشتراک‌ها ماند');
   /* شناخته‌شده و قدیمی (گزارش شده، طبق قاعده دست نخورده): app.js صفحهٔ cmd ← setTimeout ← Charts.spark($('#sp-1'))
      بدون بررسی null؛ اگر قبل از اجرای تایمر صفحه عوض شود (اینجا: پرش مستقیم به «یوزرها») خطای بی‌اثر livePrep می‌دهد. */
   const known = errors.filter(e => /getBoundingClientRect/.test(e) && /livePrep/.test(e));

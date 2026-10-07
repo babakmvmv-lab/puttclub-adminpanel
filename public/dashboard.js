@@ -85,11 +85,10 @@
     },
     {
       /* same order, icons and pages as the «مدیریت» group of panel.puttclub.ir */
-      id: 'system', title: 'مدیریت', sub: 'یوزرها، اشتراک‌ها، نمایش، پشتیبان و پیام', icon: 'shield',
+      id: 'system', title: 'مدیریت', sub: 'یوزرها، اشتراک‌ها و دسترسی، پشتیبان و پیام', icon: 'shield',
       items: [
         M('users', 'یوزرها', 'key', 'مدیریت دسترسی‌ها، یوزر و رمز', 'users'),
-        M('subs', 'اشتراک‌ها', 'card', 'پلن، تمدید و وضعیت پرداخت', 'subs'),
-        M('display-settings', 'تنظیمات نمایش', 'filter', 'نمودارها و آنچه اعضا می‌بینند', 'settings'),
+        M('subs', 'اشتراک‌ها', 'card', 'دسترسی هر پلن، قیمت و اشتراک یوزرها', 'subs'),
         M('backup', 'پشتیبان آکادمی', 'download', 'نسخهٔ پشتیبان و بازگردانی', 'backup'),
         M('messages', 'ارسال پیام', 'send', 'پیام پاپ‌آپ و ایمیل به اعضا', 'messages')
       ]
@@ -455,9 +454,12 @@
   }
 
   /* ---------- routing ---------- */
+  /* «تنظیمات نمایش» در «اشتراک‌ها ← ماتریس دسترسی» ادغام شد؛ نشانی‌های قدیمی به همان‌جا می‌روند */
+  const SLUG_ALIAS = { 'display-settings': 'subs' };
   function currentSlug() {
     const m = /^#\/m\/([a-z-]+)$/.exec(location.hash || '');
-    return m && INDEX[m[1]] ? m[1] : 'overview';
+    const s = m ? (SLUG_ALIAS[m[1]] || m[1]) : '';
+    return s && INDEX[s] ? s : 'overview';
   }
 
   function render(fromFrame) {
