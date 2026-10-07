@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Local-only UI preview server with an intentionally blank Supabase config."""
+import os
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -7,13 +8,15 @@ from urllib.parse import urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / "public"
 PREVIEW_FLAG = b'<script>window.ADMINPANEL_PREVIEW = true;</script>\n  <script src="./config.js"></script>'
-PREVIEW_CONFIG = b"""/* Local preview only: deliberately no Supabase credentials. */
+# PANEL_BRIDGE_URL: optional local members-panel bridge for tests (default: off in preview).
+PREVIEW_CONFIG = ("""/* Local preview only: deliberately no Supabase credentials. */
 window.ADMINPANEL_CONFIG = Object.freeze({
   supabaseUrl: "",
   publicKey: "",
-  accessTable: "adminpanel_access"
+  accessTable: "adminpanel_access",
+  panelBridgeUrl: "%s"
 });
-"""
+""" % os.environ.get("PANEL_BRIDGE_URL", "").replace('"', "")).encode()
 
 
 class Handler(SimpleHTTPRequestHandler):
@@ -45,6 +48,6 @@ class Handler(SimpleHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    server = ThreadingHTTPServer(("0.0.0.0", 4173), Handler)
+    server = ThreadingHTTPServer(("0.0.0.0", int(os.environ.get("PORT", "4173"))), Handler)
     print("Adminpanel preview listening on 0.0.0.0:4173 (blank Supabase config; no Auth calls)")
     server.serve_forever()

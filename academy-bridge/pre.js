@@ -15,26 +15,25 @@
   window.__PUTT_IN_ADMIN = true;
 
   /* Academy accounts are device-local by design (ga_users never syncs to the cloud).
-     On a fresh browser the academy seeds its standard list exactly like the panel does;
-     we only make sure the main admin account exists and open the session as it.
-     The academy's own login form is never reachable here (frame gated by the shell). */
+     The shell has already copied the members panel's list for this device in
+     (public/device-bridge.js), and every change here is written back to it — so this
+     must never create or alter an account. We only open the session as the panel's
+     main admin. An empty list behaves exactly like a fresh panel device: the academy's
+     own seedUsers creates the standard list. */
   try {
     var list = [];
     try { list = JSON.parse(localStorage.getItem('ga_users') || '[]'); } catch (e) { list = []; }
+    var who = null;
     if (Array.isArray(list) && list.length) {
-      var rec = null;
-      for (var i = 0; i < list.length; i++) if (list[i] && String(list[i].user || '').trim().toLowerCase() === 'admin') { rec = list[i]; break; }
-      if (!rec) {
-        var maxId = 0;
-        list.forEach(function (u) { if (u && +u.id > maxId) maxId = +u.id; });
-        var a = new Uint8Array(16); window.crypto.getRandomValues(a);
-        rec = { id: maxId + 1, user: 'admin', pass: Array.prototype.map.call(a, function (x) { return ('0' + x.toString(16)).slice(-2); }).join(''), name: 'مدیر آکادمی', role: 'admin', active: true, main: true };
-        list.unshift(rec);
-      }
-      rec.role = 'admin'; rec.active = true; rec.main = true;
-      localStorage.setItem('ga_users', JSON.stringify(list));
+      var ok = function (u) { return u && u.role === 'admin' && u.active !== false && String(u.user || '').trim(); };
+      var main = list.filter(function (u) { return ok(u) && u.main; })[0];
+      var any = list.filter(ok)[0];
+      who = main || any || null;
+      if (who) localStorage.setItem('ga_session', String(who.user).trim());
+      else { localStorage.removeItem('ga_session'); window.__PUTT_NO_ADMIN = true; }
+    } else {
+      localStorage.setItem('ga_session', 'admin');
     }
-    localStorage.setItem('ga_session', 'admin');
   } catch (e) {}
 
   /* Keep browser history clean: the shell owns navigation. */

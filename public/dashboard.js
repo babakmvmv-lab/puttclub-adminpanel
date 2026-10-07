@@ -312,6 +312,8 @@
     actions.append(sync, pullBtn);
     bar.append(actions);
     root.append(bar);
+    const note = deviceNote(slug);
+    if (note) root.append(note);
     updateSync();
   }
 
@@ -330,12 +332,41 @@
     const frame = document.createElement('iframe');
     frame.id = 'academyFrame';
     frame.title = 'پنل مدیریت آکادمی';
-    frame.src = './academy/';
     frame.setAttribute('referrerpolicy', 'same-origin');
     host.append(frame, loading);
     state.frame = frame;
     state.frameReady = false;
     state.frameFailed = false;
+    /* Accounts / legacy player logins / device backups live in the members panel's storage
+       on this device: copy them in first, so the academy starts with exactly that list. */
+    const store = window.PuttDeviceStore;
+    const start = () => { if (state.frame === frame) frame.src = './academy/'; };
+    if (store && store.link) {
+      const small = loading.querySelector('small');
+      if (small) small.textContent = 'اتصال به حافظهٔ پنل اعضا روی این دستگاه…';
+      store.link().then(() => {
+        if (small) small.textContent = 'همان برنامه و همان داده‌های panel.puttclub.ir';
+        start();
+      });
+    } else {
+      start();
+    }
+  }
+
+  /* where on-device data (accounts, legacy player logins, local backups) is managed */
+  const DEVICE_SLUGS = { users: 1, players: 1, backup: 1 };
+  function deviceNote(slug) {
+    const store = window.PuttDeviceStore;
+    if (!store || !DEVICE_SLUGS[slug]) return null;
+    const s = store.status();
+    if (s.phase === 'off' || s.phase === 'idle' || s.phase === 'connecting') return null;
+    const box = el('div', 'device-note' + (s.phase === 'error' ? ' is-err' : ''));
+    box.id = 'deviceNote';
+    box.append(el('i', 'sync-dot'));
+    box.append(el('span', '', s.phase === 'error'
+      ? s.error + ' — تغییرات یوزرها/پشتیبان روی پنل اعضا اعمال نمی‌شود؛ صفحه را تازه کنید.'
+      : 'یوزرها و نسخه‌های روی دستگاه، همان حافظهٔ پنل اعضا روی همین دستگاه است (طبق طراحی برنامه، روی ابر نمی‌رود).'));
+    return box;
   }
 
   function destroyFrame() {
@@ -401,12 +432,18 @@
     const slug = currentSlug();
     if (slug !== 'overview') openInFrame(slug, true);
   }
-  function frameFailed() {
+  function frameFailed(reason) {
     state.frameFailed = true;
     const loading = $('#frameLoading');
     if (loading) {
       loading.textContent = '';
-      loading.append(el('b', '', 'پنل آکادمی بارگذاری نشد'), el('small', '', 'صفحه را تازه کنید یا دوباره وارد شوید.'));
+      if (reason === 'no-admin') {
+        /* same dead end as panel.puttclub.ir on this device: no active admin account in its list */
+        loading.append(el('b', '', 'در فهرست یوزرهای این دستگاه هیچ ادمین فعالی نیست'),
+          el('small', '', 'حساب‌های آکادمی فقط روی همین دستگاه ذخیره می‌شوند و پنل اعضا هم در این حالت مدیریت را باز نمی‌کند. فهرست تغییری نکرده است؛ برای فعال‌کردن دوبارهٔ حساب ادمین با پشتیبانی فنی تماس بگیرید.'));
+      } else {
+        loading.append(el('b', '', 'پنل آکادمی بارگذاری نشد'), el('small', '', 'صفحه را تازه کنید یا دوباره وارد شوید.'));
+      }
     }
     updateSync();
   }
@@ -490,6 +527,15 @@
       $('#navBackdrop').addEventListener('click', closeDrawer);
       document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
       window.addEventListener('focus', () => { if (currentSlug() === 'overview') cloudPull(false); });
+      if (window.PuttDeviceStore) window.PuttDeviceStore.onChange(() => {
+        const slug = currentSlug();
+        const old = $('#deviceNote');
+        if (!DEVICE_SLUGS[slug]) { if (old) old.remove(); return; }
+        const fresh = deviceNote(slug);
+        if (old && fresh) old.replaceWith(fresh);
+        else if (old) old.remove();
+        else if (fresh) { const bar = $('#dashPage .module-bar'); if (bar) bar.after(fresh); }
+      });
     }
     render();
     /* Load the academy in the background so modules open instantly and stay in sync. */
@@ -499,6 +545,7 @@
 
   function unmount() {
     destroyFrame();
+    if (window.PuttDeviceStore) window.PuttDeviceStore.reset();
     try { localStorage.removeItem('ga_session'); } catch (_) {}
   }
 

@@ -75,7 +75,7 @@
       if (sh && sh.frameReady) sh.frameReady();
       return;
     }
-    if (++tries > 200) { var s2 = shell(); if (s2 && s2.frameFailed) s2.frameFailed(); return; }
+    if (window.__PUTT_NO_ADMIN || ++tries > 200) { var s2 = shell(); if (s2 && s2.frameFailed) s2.frameFailed(window.__PUTT_NO_ADMIN ? 'no-admin' : ''); return; }
     setTimeout(waitReady, 100);
   })();
 })();
