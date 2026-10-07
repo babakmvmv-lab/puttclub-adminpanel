@@ -108,7 +108,7 @@
   }
 
   async function authorizedAdmin(session) {
-    if (!session || !session.access_token || !session.user || !session.user.id) return false;
+    if (!session || !session.access_token || !session.user || !session.user.id) return null;
     const table = String(cfg.accessTable || 'adminpanel_access').replace(/[^a-zA-Z0-9_]/g, '');
     const query = new URLSearchParams({
       select: 'role,active', user_id: 'eq.' + session.user.id, active: 'eq.true', limit: '1'
@@ -118,7 +118,8 @@
     });
     if (!response.ok) throw new Error('دسترسی مدیر در ساختار اختصاصی پنل تأیید نشد.');
     const rows = await response.json();
-    return Array.isArray(rows) && rows.some(row => row && row.active === true && ['admin', 'owner'].includes(row.role));
+    const row = Array.isArray(rows) ? rows.find(r => r && r.active === true && ['admin', 'owner'].includes(r.role)) : null;
+    return row ? row.role : null;
   }
 
   function saveSession(session) {
@@ -139,22 +140,70 @@
     return normalizeSession(renewed);
   }
 
-  function showDashboard(session) {
+  function showDashboard(session, options = {}) {
     loginView.hidden = true;
     dashboardView.hidden = false;
     document.body.classList.add('is-dashboard');
     const email = session && session.user && session.user.email;
     const manager = $('#managerEmail');
     if (manager) manager.textContent = email || 'مدیر';
+    const role = $('#managerRole');
+    if (role) role.textContent = session && session.role === 'owner' ? 'مدیر اصلی سیستم' : 'مدیر سیستم';
+    const avatar = document.querySelector('.manager-avatar');
+    if (avatar && email) avatar.textContent = email.charAt(0).toUpperCase();
     startClock();
     updateSystemStatus();
+    window.PuttDashboard.mount({
+      preview: !!options.preview,
+      loadStore: options.preview ? null : loadStoreSummary
+    });
+    if (!options.preview) scheduleRefresh(session);
   }
 
   function showLogin() {
     dashboardView.hidden = true;
     loginView.hidden = false;
     document.body.classList.remove('is-dashboard');
+    if (refreshTimer) clearTimeout(refreshTimer);
     startClock();
+  }
+
+  /* Keep the access token fresh while the dashboard stays open. */
+  let refreshTimer = null;
+  function scheduleRefresh(session) {
+    if (refreshTimer) clearTimeout(refreshTimer);
+    if (!session || !session.expires_at) return;
+    const wait = Math.max(15000, session.expires_at - Date.now() - 90000);
+    refreshTimer = setTimeout(async () => {
+      try {
+        const current = loadSession();
+        const renewed = await refreshSession(current);
+        if (!renewed) throw new Error('expired');
+        renewed.role = current.role;
+        saveSession(renewed);
+        scheduleRefresh(renewed);
+      } catch (_) {
+        clearSession();
+        showLogin();
+        showMessage('نشست شما پایان یافت؛ دوباره وارد شوید.', 'info');
+      }
+    }, wait);
+  }
+
+  /* Read-only summary for the overview cards (small keys only). */
+  async function loadStoreSummary() {
+    const session = loadSession();
+    if (!session || !session.access_token) throw new Error('no session');
+    const keys = ['ga_subscriptions', 'ga_tournaments', 'ga_courses', 'ga_events'];
+    const query = new URLSearchParams({ select: 'k,v', k: 'in.(' + keys.join(',') + ')' });
+    const response = await fetch(apiBase() + '/rest/v1/ga_store?' + query.toString(), {
+      method: 'GET', headers: authHeaders(session.access_token), cache: 'no-store'
+    });
+    if (!response.ok) throw new Error('store ' + response.status);
+    const rows = await response.json();
+    const map = {};
+    (Array.isArray(rows) ? rows : []).forEach(row => { if (row && row.k) map[row.k] = row.v; });
+    return map;
   }
 
   async function restoreSession() {
@@ -166,7 +215,9 @@
         session = await refreshSession(session);
         if (!session) throw new Error('نشست پایان یافته است. دوباره وارد شوید.');
       }
-      if (!(await authorizedAdmin(session))) throw new Error('این حساب دسترسی مدیر پنل را ندارد.');
+      const role = await authorizedAdmin(session);
+      if (!role) throw new Error('این حساب دسترسی مدیر پنل را ندارد.');
+      session.role = role;
       saveSession(session);
       showDashboard(session);
     } catch (_) {
@@ -178,10 +229,12 @@
   async function signIn(email, password) {
     const authData = await postAuth('token?grant_type=password', { email, password });
     const session = normalizeSession(authData);
-    if (!(await authorizedAdmin(session))) {
+    const role = await authorizedAdmin(session);
+    if (!role) {
       try { await postAuth('logout', {}, session.access_token); } catch (_) {}
       throw new Error('این حساب برای ورود به پنل مدیریت مجاز نیست.');
     }
+    session.role = role;
     saveSession(session);
     showDashboard(session);
   }
@@ -232,22 +285,6 @@
 
   $('#logoutBtn').addEventListener('click', signOut);
 
-  const moduleButtons = Array.from(document.querySelectorAll('.module-tile'));
-  moduleButtons.forEach((button) => {
-    button.addEventListener('click', () => {
-      moduleButtons.forEach((item) => {
-        item.classList.remove('is-active');
-        item.removeAttribute('aria-current');
-      });
-      button.classList.add('is-active');
-      button.setAttribute('aria-current', 'page');
-      const title = $('#moduleTitle');
-      const message = $('#moduleMessage');
-      if (title) title.textContent = button.dataset.module || 'بخش مدیریت';
-      if (message) message.textContent = 'این گزینه در منوی پنل ثبت شده است؛ عملیات مدیریتی آن هنوز پیاده‌سازی نشده است.';
-    });
-  });
-
   window.addEventListener('online', updateSystemStatus);
   window.addEventListener('offline', updateSystemStatus);
 
@@ -255,6 +292,10 @@
   if (!isSecureTransport()) {
     setBusy(false);
     blockInsecureTransport();
+  } else if (!authIsConfigured() && window.ADMINPANEL_PREVIEW === true) {
+    /* Local design preview only (dev/server.py). Never active when Supabase is configured. */
+    setBusy(false);
+    showDashboard({ user: { email: 'admin@puttclub.ir' }, role: 'owner' }, { preview: true });
   } else if (!authIsConfigured()) {
     setBusy(false);
     showMessage('پیش‌نمایش طراحی؛ برای ورود واقعی باید Supabase و جدول دسترسی اختصاصی پنل تنظیم شود.', 'info');

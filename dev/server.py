@@ -6,7 +6,7 @@ from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / "public"
-PREVIEW = ROOT / "dev" / "dashboard-preview.html"
+PREVIEW_FLAG = b'<script>window.ADMINPANEL_PREVIEW = true;</script>\n  <script src="./config.js"></script>'
 PREVIEW_CONFIG = b"""/* Local preview only: deliberately no Supabase credentials. */
 window.ADMINPANEL_CONFIG = Object.freeze({
   supabaseUrl: "",
@@ -33,11 +33,10 @@ class Handler(SimpleHTTPRequestHandler):
         if path == "/config.js":
             return self.send_bytes(PREVIEW_CONFIG, "application/javascript; charset=utf-8")
         if path == "/__preview":
-            try:
-                body = PREVIEW.read_bytes()
-            except OSError:
-                self.send_error(404)
-                return
+            # Same index.html as production, plus a local-only flag that opens the
+            # dashboard shell with demo numbers (the blank config keeps Auth off).
+            body = (PUBLIC / "index.html").read_bytes()
+            body = body.replace(b'<script src="./config.js"></script>', PREVIEW_FLAG, 1)
             return self.send_bytes(body, "text/html; charset=utf-8")
         return super().do_GET()
 

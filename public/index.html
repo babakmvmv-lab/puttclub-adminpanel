@@ -11,6 +11,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%230b2119'/%3E%3Cpath d='M17 48V13h3v35M21 15c12-7 20 6 31 0v19c-11 6-19-7-31 0' fill='none' stroke='%23d5b66a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="./styles.css">
   <script src="./config.js"></script>
+  <script defer src="./dashboard.js"></script>
   <script defer src="./app.js"></script>
 </head>
 <body>
@@ -72,77 +73,48 @@
   </main>
 
   <div id="dashboardView" class="admin-dashboard" hidden>
-    <header class="dashboard-header">
-      <div class="header-statuses" aria-label="وضعیت سامانه، ساعت و تاریخ">
-        <div class="status-chip active-chip"><span class="status-dot" aria-hidden="true"></span><b>فعال</b></div>
+    <header class="dash-topbar">
+      <div class="topbar-brand">
+        <button id="navToggle" class="nav-toggle" type="button" aria-label="بازکردن منو" aria-controls="dashSidebar" aria-expanded="false"><span></span><span></span><span></span></button>
+        <span class="brand-emblem small" aria-hidden="true"><span></span></span>
+        <div class="topbar-title"><b>کنسول مدیریت</b><small>PUTT CLUB | پات‌کلاب</small></div>
+      </div>
+
+      <div class="topbar-status" aria-label="ساعت و تاریخ تهران">
         <div class="status-chip time-chip" aria-label="ساعت تهران">
           <span class="status-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 1.5M9 2.5h6M12 2.5v2.5"/></svg></span>
           <b id="tehranTime">—</b>
         </div>
         <div class="status-chip date-chip" aria-label="تاریخ شمسی">
-          <span class="status-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="16" rx="3"/><path d="M7.5 3.5v3M16.5 3.5v3M4 9h16M8 12.5h.01M12 12.5h.01M16 12.5h.01M8 16.5h.01M12 16.5h.01"/></svg></span>
+          <span class="status-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="16" rx="3"/><path d="M7.5 3.5v3M16.5 3.5v3M4 9h16"/></svg></span>
           <b id="tehranDate">—</b>
-        </div>
-        <div id="systemStatus" class="status-chip online-chip" aria-live="polite">
-          <span id="systemStatusDot" class="status-dot" aria-hidden="true"></span><b id="systemStatusText">سیستم آنلاین</b>
         </div>
       </div>
 
-      <div class="header-right">
-        <div class="page-heading">
-          <span class="page-heading-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 8.2a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6Z"/><path d="m19.4 13.5 1.2.9-1.5 2.6-1.4-.6a7.7 7.7 0 0 1-1.5.9l-.2 1.5h-3l-.3-1.5a7.7 7.7 0 0 1-1.5-.9l-1.4.6-1.5-2.6 1.2-.9a7.3 7.3 0 0 1 0-1.8l-1.2-.9 1.5-2.6 1.4.6a7.7 7.7 0 0 1 1.5-.9l.3-1.5h3l.2 1.5a7.7 7.7 0 0 1 1.5.9l1.4-.6 1.5 2.6-1.2.9a7.3 7.3 0 0 1 0 1.8Z"/></svg></span>
-          <div>
-            <h1>پنل مدیریت</h1>
-            <p>داشبورد <span aria-hidden="true">/</span> پنل مدیریت</p>
-          </div>
+      <div class="topbar-account">
+        <div class="manager-chip">
+          <span class="manager-avatar" aria-hidden="true">م</span>
+          <div class="manager-meta"><b id="managerEmail" class="manager-label">مدیر</b><small id="managerRole">مدیر سیستم</small></div>
         </div>
-        <div class="header-account">
-          <div class="manager-chip"><span class="manager-avatar" aria-hidden="true">م</span><span id="managerEmail" class="manager-label">مدیر</span></div>
-          <button id="logoutBtn" class="logout-btn" type="button"><span aria-hidden="true">↪</span><b>خروج</b></button>
-        </div>
+        <a class="top-link" href="https://panel.puttclub.ir/" target="_blank" rel="noopener noreferrer"><b>پنل اعضا</b><span aria-hidden="true">↗</span></a>
+        <a class="top-link" href="https://puttclub.ir/" target="_blank" rel="noopener noreferrer"><b>سایت</b><span aria-hidden="true">↗</span></a>
+        <button id="logoutBtn" class="logout-btn" type="button"><b>خروج</b></button>
       </div>
     </header>
 
-    <main class="dashboard-main">
-      <section class="menu-card" aria-labelledby="menuCardTitle">
-        <div class="menu-card-header">
-          <div class="menu-card-title">
-            <span class="menu-title-icon" aria-hidden="true">⌘</span>
-            <div><h2 id="menuCardTitle">پنل مدیریت <span>— ساخت، ویرایش، حذف</span></h2><p>دسترسی سریع به بخش‌های آکادمی</p></div>
-          </div>
-          <div class="menu-card-badges">
-            <span class="season-badge"><span aria-hidden="true">◷</span> فصل ۱۴۰۵</span>
-            <span class="admin-badge"><span class="badge-dot" aria-hidden="true"></span> PUTT CLUB · ADMIN</span>
-          </div>
+    <div class="dash-body">
+      <aside id="dashSidebar" class="dash-sidebar" aria-label="منوی پنل مدیریت">
+        <nav id="sideNav" class="side-nav" aria-label="بخش‌های مدیریت"></nav>
+        <div id="systemStatus" class="sidebar-status" aria-live="polite">
+          <span class="status-dot" aria-hidden="true"></span>
+          <b id="systemStatusText">سیستم آنلاین</b>
+          <small>منطقهٔ زمانی تهران</small>
         </div>
+      </aside>
+      <button id="navBackdrop" class="nav-backdrop" type="button" aria-label="بستن منو" tabindex="-1"></button>
 
-        <nav class="module-grid" aria-label="منوی پنل مدیریت">
-          <button class="module-tile" type="button" data-module="تنظیمات آکادمی"><span class="module-icon" aria-hidden="true">⚙️</span><span>تنظیمات آکادمی</span></button>
-          <button class="module-tile" type="button" data-module="بازیکنان"><span class="module-icon" aria-hidden="true">👥</span><span>بازیکنان</span></button>
-          <button class="module-tile" type="button" data-module="زمین‌ها"><span class="module-icon" aria-hidden="true">⛳</span><span>زمین‌ها</span></button>
-          <button class="module-tile" type="button" data-module="مسابقات"><span class="module-icon" aria-hidden="true">🏆</span><span>مسابقات</span></button>
-          <button class="module-tile" type="button" data-module="دوره‌ها"><span class="module-icon" aria-hidden="true">📚</span><span>دوره‌ها</span></button>
-          <button class="module-tile" type="button" data-module="نتایج"><span class="module-icon" aria-hidden="true">📊</span><span>نتایج</span></button>
-          <button class="module-tile" type="button" data-module="تقویم"><span class="module-icon" aria-hidden="true">📅</span><span>تقویم</span></button>
-          <button class="module-tile" type="button" data-module="پشتیبان"><span class="module-icon" aria-hidden="true">🛟</span><span>پشتیبان</span></button>
-          <button class="module-tile" type="button" data-module="تماس با ما"><span class="module-icon" aria-hidden="true">☎️</span><span>تماس با ما</span></button>
-          <button class="module-tile" type="button" data-module="اطلاعات"><span class="module-icon" aria-hidden="true">ℹ️</span><span>اطلاعات</span></button>
-          <button class="module-tile" type="button" data-module="یوزرها"><span class="module-icon" aria-hidden="true">👤</span><span>یوزرها</span></button>
-          <button class="module-tile coin-request" type="button" data-module="درخواست سکه"><span class="module-icon" aria-hidden="true">🪙</span><span>درخواست سکه</span></button>
-          <button class="module-tile" type="button" data-module="رنگ و آواتار"><span class="module-icon" aria-hidden="true">🎨</span><span>رنگ و آواتار</span></button>
-          <button class="module-tile" type="button" data-module="فروشگاه آواتار"><span class="module-icon" aria-hidden="true">🛍️</span><span>فروشگاه آواتار</span></button>
-          <button class="module-tile" type="button" data-module="نبرد میدان‌ها"><span class="module-icon" aria-hidden="true">⚔️</span><span>نبرد میدان‌ها</span></button>
-          <button class="module-tile" type="button" data-module="سرزمین آواتارها"><span class="module-icon" aria-hidden="true">🏝️</span><span>سرزمین آواتارها</span></button>
-          <button class="module-tile" type="button" data-module="ویرایش آیتم‌ها"><span class="module-icon" aria-hidden="true">🧩</span><span>ویرایش آیتم‌ها</span></button>
-        </nav>
-      </section>
-
-      <section id="moduleWorkspace" class="module-workspace" aria-live="polite" aria-atomic="true">
-        <div class="workspace-mark" aria-hidden="true"><span>⛳</span></div>
-        <div><h2 id="moduleTitle">مرکز مدیریت آکادمی</h2><p id="moduleMessage">برای مشاهدهٔ یک بخش، آن را از منوی پنل انتخاب کنید.</p></div>
-      </section>
-      <footer class="dashboard-footer"><span>PUTT CLUB · پنل مستقل مدیریت</span><span>منطقهٔ زمانی: تهران</span></footer>
-    </main>
+      <main id="dashContent" class="dash-content" tabindex="-1"></main>
+    </div>
   </div>
 </body>
 </html>
