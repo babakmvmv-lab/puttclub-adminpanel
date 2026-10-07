@@ -7,6 +7,7 @@
   const dashboardView = $('#dashboardView');
   const loginForm = $('#loginForm');
   const loginMessage = $('#loginMessage');
+  const transportMessage = $('#transportMessage');
   const loginSubmit = $('#loginSubmit');
   let clockTimer = null;
   let busy = false;
@@ -49,9 +50,21 @@
     loginSubmit.querySelector('span').textContent = value ? 'در حال بررسی…' : 'ورود امن';
   }
 
+  function isSecureTransport() {
+    if (window.location.protocol === 'https:') return true;
+    const host = window.location.hostname.toLowerCase();
+    return host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '[::1]';
+  }
+
   function authIsConfigured() {
-    return typeof cfg.supabaseUrl === 'string' && /^https:\/\//i.test(cfg.supabaseUrl) &&
+    return isSecureTransport() && typeof cfg.supabaseUrl === 'string' && /^https:\/\//i.test(cfg.supabaseUrl) &&
       typeof cfg.publicKey === 'string' && cfg.publicKey.trim().length > 20;
+  }
+
+  function blockInsecureTransport() {
+    loginForm.hidden = true;
+    transportMessage.textContent = 'برای حفاظت از اطلاعات ورود، فرم فقط روی اتصال امن HTTPS فعال می‌شود. تا آماده‌شدن گواهی HTTPS، اطلاعات ورود را وارد نکنید.';
+    transportMessage.hidden = false;
   }
 
   function apiBase() {
@@ -175,6 +188,10 @@
   loginForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (busy) return;
+    if (!isSecureTransport()) {
+      blockInsecureTransport();
+      return;
+    }
     if (!authIsConfigured()) {
       showMessage('این پیش‌نمایش هنوز به احراز هویت سرور وصل نشده است؛ ورود واقعی تا تنظیم امن Supabase غیرفعال می‌ماند.', 'info');
       return;
@@ -219,7 +236,10 @@
   window.addEventListener('resize', () => { if (window.innerWidth > 820) closeMenu(); });
 
   startClock();
-  if (!authIsConfigured()) {
+  if (!isSecureTransport()) {
+    setBusy(false);
+    blockInsecureTransport();
+  } else if (!authIsConfigured()) {
     setBusy(false);
     showMessage('پیش‌نمایش طراحی؛ برای ورود واقعی باید Supabase و جدول دسترسی اختصاصی پنل تنظیم شود.', 'info');
   } else {
