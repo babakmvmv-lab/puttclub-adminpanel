@@ -29,6 +29,8 @@
     arrow: '<path d="M19 12H5.5M11 6l-6 6 6 6"/>',
     chevron: '<path d="M6.5 9.5 12 15l5.5-5.5"/>',
     check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+    key: '<circle cx="7.5" cy="15.5" r="4"/><path d="M10.4 12.6 19 4M16 7l2.5 2.5M18.5 4.5 21 7"/>',
+    filter: '<path d="M3.5 4.5h17l-6.6 7.8v6.2l-3.8 2v-8.2z"/>',
     bell: '<path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0M12 3v2"/>',
     send: '<path d="M21 3 10.5 13.5M21 3l-6.5 18-4-7.5L3 9.5z"/>',
     card: '<rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h4"/>',
@@ -75,20 +77,21 @@
       ]
     },
     {
-      id: 'comms', title: 'ارتباطات', sub: 'تماس، اطلاعات و پیام به اعضا', icon: 'chat',
+      id: 'comms', title: 'ارتباطات', sub: 'تماس با ما و اطلاعات سایت', icon: 'chat',
       items: [
         M('contact', 'تماس با ما', 'phone', 'راه‌های ارتباطی سایت', 'mgmt', 'contact'),
-        M('info', 'اطلاعات', 'info', 'محتوای اطلاعات آکادمی', 'mgmt', 'info'),
-        M('messages', 'ارسال پیام', 'send', 'پیام پاپ‌آپ و ایمیل به اعضا', 'messages')
+        M('info', 'اطلاعات', 'info', 'محتوای اطلاعات آکادمی', 'mgmt', 'info')
       ]
     },
     {
-      id: 'system', title: 'حساب‌ها و سیستم', sub: 'یوزرها، اشتراک‌ها و پشتیبان', icon: 'shield',
+      /* same order, icons and pages as the «مدیریت» group of panel.puttclub.ir */
+      id: 'system', title: 'مدیریت', sub: 'یوزرها، اشتراک‌ها، نمایش، پشتیبان و پیام', icon: 'shield',
       items: [
-        M('users', 'یوزرها', 'user', 'حساب‌ها و دسترسی‌ها', 'mgmt', 'users'),
+        M('users', 'یوزرها', 'key', 'مدیریت دسترسی‌ها، یوزر و رمز', 'users'),
         M('subs', 'اشتراک‌ها', 'card', 'پلن، تمدید و وضعیت پرداخت', 'subs'),
-        M('display-settings', 'تنظیمات نمایش', 'sliders', 'نمودارها و آنچه اعضا می‌بینند', 'settings'),
-        M('backup', 'پشتیبان آکادمی', 'download', 'نسخهٔ پشتیبان و بازگردانی', 'backup')
+        M('display-settings', 'تنظیمات نمایش', 'filter', 'نمودارها و آنچه اعضا می‌بینند', 'settings'),
+        M('backup', 'پشتیبان آکادمی', 'download', 'نسخهٔ پشتیبان و بازگردانی', 'backup'),
+        M('messages', 'ارسال پیام', 'send', 'پیام پاپ‌آپ و ایمیل به اعضا', 'messages')
       ]
     },
     {
@@ -133,6 +136,7 @@
   function link(slug) { return slug === 'overview' ? '#/overview' : '#/m/' + slug; }
   function slugFor(target) {
     if (!target) return null;
+    if (target.page === 'mgmt' && target.tab === 'users') return 'users';
     let fallback = null;
     for (const key of Object.keys(INDEX)) {
       const t = INDEX[key].item.target;
