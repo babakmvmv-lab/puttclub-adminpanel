@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#08120f">
   <meta name="description" content="پنل مدیریت اختصاصی باشگاه گلف پات‌کلاب">
+  <link rel="preload" href="./assets/fonts/vazirmatn-arabic-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./assets/fonts/vazirmatn-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <title>ورود مدیریت — پات‌کلاب</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%230b2119'/%3E%3Cpath d='M17 48V13h3v35M21 15c12-7 20 6 31 0v19c-11 6-19-7-31 0' fill='none' stroke='%23d5b66a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="./styles.css">
@@ -21,8 +23,8 @@
       </div>
       <div class="visual-copy">
         <span class="eyebrow"><i></i> فضای اختصاصی مدیریت</span>
-        <h1>مدیریت باشگاه،<br><em>با آرامش و دقت.</em></h1>
-        <p>مرکز مدیریت آکادمی گلف پات‌کلاب</p>
+        <h1>سامانه مدیریت،<br><em>با تمرکز و دقت.</em></h1>
+        <p>درگاه اختصاصی مدیریت آکادمی گلف پات‌کلاب</p>
       </div>
       <div class="visual-caption"><span>PUTT CLUB · PRIVATE ADMINISTRATION</span><span>TEHRAN · IRAN</span></div>
     </section>
@@ -36,29 +38,29 @@
         <div class="login-card">
           <div class="card-brand">
             <span class="brand-emblem small" aria-hidden="true"><span></span></span>
-            <div><b>پنل مدیریت</b><small>پات‌کلاب</small></div>
+            <div><b>درگاه مدیریت</b><small>PUTT CLUB · ADMIN</small></div>
           </div>
           <div class="card-heading">
             <span class="eyebrow">خوش آمدید</span>
-            <h2>ورود به پنل</h2>
-            <p>برای ادامه، اطلاعات حساب مدیر را وارد کنید.</p>
+            <h2>احراز هویت <em>مدیر</em></h2>
+            <p>این درگاه فقط برای حساب‌های مجاز مدیریت پات‌کلاب در دسترس است.</p>
           </div>
           <div id="transportMessage" class="form-message info" role="status" aria-live="polite" hidden></div>
           <form id="loginForm" autocomplete="on" novalidate>
             <label class="field-label" for="loginEmail">ایمیل مدیر</label>
             <div class="input-wrap">
-              <span class="field-icon" aria-hidden="true">✉</span>
-              <input id="loginEmail" name="email" type="email" autocomplete="username" inputmode="email" placeholder="name@example.com" required>
+              <span class="field-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5.5" width="17" height="13" rx="3.5"/><path d="m5 7 7 5.5L19 7"/></svg></span>
+              <input id="loginEmail" name="email" type="email" autocomplete="username" inputmode="email" placeholder="ایمیل مدیر" required>
             </div>
             <label class="field-label password-label" for="loginPassword">رمز عبور</label>
             <div class="input-wrap">
-              <span class="field-icon lock-icon" aria-hidden="true">●</span>
-              <input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="رمز عبور حساب مدیر" required>
-              <button type="button" id="togglePassword" class="reveal-btn" aria-label="نمایش رمز عبور" title="نمایش/پنهان‌کردن رمز">◉</button>
+              <span class="field-icon lock-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="4.5" y="10" width="15" height="11" rx="3"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10M12 14v3"/></svg></span>
+              <input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="رمز عبور" required>
+              <button type="button" id="togglePassword" class="reveal-btn" aria-label="نمایش رمز عبور" title="نمایش/پنهان‌کردن رمز"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2.8 12s3.2-5.5 9.2-5.5 9.2 5.5 9.2 5.5-3.2 5.5-9.2 5.5S2.8 12 2.8 12Z"/><circle cx="12" cy="12" r="2.4"/></svg></button>
             </div>
             <div id="loginMessage" class="form-message" role="status" aria-live="polite" hidden></div>
             <button id="loginSubmit" class="primary-btn" type="submit">
-              <span>ورود امن</span><b aria-hidden="true">←</b>
+              <span>تأیید هویت و ورود</span><b aria-hidden="true">←</b>
             </button>
           </form>
           <div class="login-foot"><span class="shield-icon" aria-hidden="true">◆</span><span>ورود امن و مخصوص مدیران مجاز</span></div>

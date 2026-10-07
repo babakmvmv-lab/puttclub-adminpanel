@@ -47,7 +47,7 @@
   function setBusy(value) {
     busy = value;
     loginSubmit.disabled = value || !authIsConfigured();
-    loginSubmit.querySelector('span').textContent = value ? 'در حال بررسی…' : 'ورود امن';
+    loginSubmit.querySelector('span').textContent = value ? 'در حال بررسی…' : 'تأیید هویت و ورود';
   }
 
   function isSecureTransport() {

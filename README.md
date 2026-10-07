@@ -4,8 +4,8 @@ This is a **separate project** for `adminpanel.puttclub.ir`. It does not modify 
 
 ## Current state
 
-- Responsive Persian RTL login and empty academy-style shell are in `public/`.
-- Exactly one golf-management photograph is used on the login screen.
+- The login uses a premium split-screen layout inspired by the supplied reference: one golf-management photograph on the left and a clean, full-height sign-in panel on the right. The empty academy-style shell remains responsive and Persian RTL.
+- Persian UI typography uses a locally hosted Vazirmatn variable font (Arabic and Latin subsets, SIL Open Font License) for crisp weights and consistent rendering without a third-party font request.
 - The post-login shell intentionally has an empty navigation container and no dashboard items; it shows the Persian date and Tehran clock.
 - The UI uses Supabase Auth plus the separate `public.adminpanel_access` table. `public/config.js` contains only the existing project's browser **publishable** key and URL; no service-role or management token is present.
 - The additive migration in `supabase/adminpanel_schema.sql` was applied to the confirmed Supabase project. It created a dedicated table, left existing academy tables untouched, and grants an authenticated user read access only to their own role row. One active owner row is linked to `Admin@puttclub.ir`; anonymous REST access returned HTTP 401. The account password was not collected or stored by this project.
