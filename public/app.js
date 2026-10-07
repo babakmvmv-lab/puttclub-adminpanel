@@ -13,7 +13,7 @@
   let busy = false;
 
   const tehranDate = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
-    timeZone: 'Asia/Tehran', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+    timeZone: 'Asia/Tehran', day: 'numeric', month: 'long', year: 'numeric'
   });
   const tehranTime = new Intl.DateTimeFormat('fa-IR', {
     timeZone: 'Asia/Tehran', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'
