@@ -10,13 +10,13 @@ This is a **separate project** for `adminpanel.puttclub.ir`. It does not modify 
 - The UI uses Supabase Auth plus the separate `public.adminpanel_access` table. `public/config.js` contains only the existing project's browser **publishable** key and URL; no service-role or management token is present.
 - The additive migration in `supabase/adminpanel_schema.sql` was applied to the confirmed Supabase project. It created a dedicated table, left existing academy tables untouched, and grants an authenticated user read access only to their own role row. One active owner row is linked to `Admin@puttclub.ir`; anonymous REST access returned HTTP 401. The account password was not collected or stored by this project.
 - GitHub Pages is configured for Actions in the separate public repository `babakmvmv-lab/puttclub-adminpanel`. The workflow deploys only `public/`; the local dashboard preview under `dev/` is not included. The initial deployment at `89d3991` and the subsequent secure-transport deployment at `c910ac0` both completed successfully.
-- The deSEC CNAME for `adminpanel.puttclub.ir` points to `babakmvmv-lab.github.io.` and is visible through public DNS, though some recursive resolvers still have a cached negative DNS answer. The site responds over HTTP, but GitHub has not issued a matching HTTPS certificate yet. The login form is hidden on non-HTTPS public origins. **Do not enter real credentials until HTTPS has a valid certificate and is verified.**
+- The deSEC CNAME for `adminpanel.puttclub.ir` points to `babakmvmv-lab.github.io.` and is visible through Google and Cloudflare public DNS. GitHub Pages reports the domain valid and serving Pages; its TLS certificate is approved through `2027-01-05`, and HTTPS enforcement is enabled. A normal TLS-verified request to `https://adminpanel.puttclub.ir/` returned HTTP 200; HTTP requests redirect to HTTPS. The login form also refuses non-HTTPS public origins.
+- The Auth account and active owner authorization row exist, but end-to-end sign-in was not tested because no password was shared or stored.
 
 ## Remaining launch checks
 
-1. Wait for GitHub Pages to provision the custom-domain certificate, then verify `https://adminpanel.puttclub.ir` with normal certificate validation and enable HTTPS enforcement in Pages.
-2. Test real sign-in directly on the HTTPS site with the owner's account. The website never stores the password; Supabase Auth validates it server-side. If needed, use Supabase's secure password-reset flow yourself.
-3. For a later move to your own host, copy `public/`, configure TLS, and change only the subdomain DNS target. Keep the academy repository and existing data untouched.
+1. Sign in at `https://adminpanel.puttclub.ir` with the owner's account. Supabase Auth validates the password server-side; the site never stores it. If needed, use Supabase's secure password-reset flow yourself.
+2. For a later move to your own host, copy `public/`, configure TLS, and change only the subdomain DNS target. Keep the academy repository and existing data untouched.
 
 Never put a service-role key, GitHub PAT, or DNS-provider token in browser files or Git history.
 
