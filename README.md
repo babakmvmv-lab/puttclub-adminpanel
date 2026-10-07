@@ -26,4 +26,4 @@ Never put a service-role key, GitHub PAT, or DNS-provider token in browser files
 python3 dev/server.py
 ```
 
-The root route serves the login-design preview. `/__preview` shows the empty post-login shell without connecting to Auth or Supabase. This development route is implemented only by the local preview server and is never published by the Pages workflow.
+The root route serves the login-design preview with an intentionally blank local `config.js`, so it cannot call Supabase or authenticate. `/__preview` shows the empty post-login shell without connecting to Auth or Supabase. The preview server and route are local-only and are never published by the Pages workflow.
