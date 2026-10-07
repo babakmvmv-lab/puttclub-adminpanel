@@ -1,0 +1,29 @@
+/* Academy app restyled for the adminpanel console (forest/gold palette, no academy chrome). */
+html.in-adminpanel{
+  --bg:#08110f; --bg2:#0c1714; --panel:#0f1d18; --panel2:#132520;
+  --gold:#d6b66a; --gold-l:#f0d995; --gold-d:#8c6e1d;
+  --green-l:#8fc4a4; --muted:#9aa79f; --dim:#86938b;
+  --line:rgba(214,182,106,.2); --line-soft:rgba(243,240,232,.08);
+  --radius:18px;
+  scrollbar-width:thin; scrollbar-color:rgba(214,182,106,.3) transparent;
+}
+html.in-adminpanel body{background:#08110f!important}
+html.in-adminpanel .bg-mesh{background:radial-gradient(900px 600px at 90% -10%,rgba(28,64,48,.35),transparent 60%),#08110f!important;animation:none!important}
+html.in-adminpanel #particles,
+html.in-adminpanel #login,
+html.in-adminpanel #app>.sidebar,
+html.in-adminpanel #nav-overlay,
+html.in-adminpanel .main>.topbar,
+html.in-adminpanel #member-mobile-nav,
+html.in-adminpanel #ga-cloud-chip,
+html.in-adminpanel #ga-cloud-panel,
+html.in-adminpanel .mgmt-tabs{display:none!important}
+html.in-adminpanel #app{display:block!important}
+html.in-adminpanel #app .main{margin:0!important;padding:18px 20px 60px!important;min-height:100vh}
+html.in-adminpanel #view{max-width:none}
+html.in-adminpanel .glass{background:linear-gradient(150deg,rgba(16,30,25,.96),rgba(10,20,17,.96))!important;border-color:rgba(223,207,158,.12)!important;box-shadow:0 14px 36px rgba(0,0,0,.2)!important;border-radius:20px}
+html.in-adminpanel .glass.gold-border{border-color:rgba(214,182,106,.32)!important}
+html.in-adminpanel .btn.gold,html.in-adminpanel .btn.primary{background:linear-gradient(110deg,#f1cb4b,#e3aa16)!important;color:#201b0d!important;border-color:rgba(255,238,177,.4)!important}
+html.in-adminpanel .inp,html.in-adminpanel input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]),html.in-adminpanel select,html.in-adminpanel textarea{border-radius:12px}
+html.in-adminpanel .inp:focus,html.in-adminpanel input:focus,html.in-adminpanel select:focus,html.in-adminpanel textarea:focus{border-color:rgba(240,217,149,.8)!important;box-shadow:0 0 0 3px rgba(214,182,106,.12)!important;outline:none}
+@media(max-width:720px){html.in-adminpanel #app .main{padding:12px 10px 40px!important}}

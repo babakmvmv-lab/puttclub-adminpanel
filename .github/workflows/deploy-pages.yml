@@ -5,7 +5,12 @@ on:
     branches: [main]
     paths:
       - 'public/**'
+      - 'academy-bridge/**'
+      - 'tools/**'
       - '.github/workflows/deploy-pages.yml'
+  schedule:
+    # daily, after panel.puttclub.ir syncs (03:17 UTC) — picks up academy code changes
+    - cron: '47 3 * * *'
   workflow_dispatch:
 
 permissions:
@@ -26,6 +31,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install build dependency
+        run: pip install Pillow
+      - name: Build the academy app from the same source as panel.puttclub.ir
+        run: |
+          set -e
+          git clone --depth 1 https://github.com/babakmvmv-lab/golf-academy-pro.git /tmp/main
+          python3 tools/build_academy.py --src /tmp/main
+          test -s public/academy/index.html
+          grep -q '__PUTT_IN_ADMIN' public/academy/index.html
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Upload the public site only

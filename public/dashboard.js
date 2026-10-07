@@ -29,56 +29,91 @@
     arrow: '<path d="M19 12H5.5M11 6l-6 6 6 6"/>',
     chevron: '<path d="M6.5 9.5 12 15l5.5-5.5"/>',
     check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+    bell: '<path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0M12 3v2"/>',
+    send: '<path d="M21 3 10.5 13.5M21 3l-6.5 18-4-7.5L3 9.5z"/>',
+    card: '<rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h4"/>',
+    sliders: '<path d="M5 4v6M5 14v6M12 4v3M12 11v9M19 4v9M19 17v3"/><path d="M3 12h4M10 9h4M17 15h4"/>',
+    download: '<path d="M12 3.5v11M7.5 10l4.5 4.5 4.5-4.5"/><path d="M4 16.5v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>',
+    compass: '<circle cx="12" cy="12" r="8.5"/><path d="M15.5 8.5 13.6 13.6 8.5 15.5l1.9-5.1z"/>',
+    tv: '<rect x="3" y="4.5" width="18" height="12.5" rx="2.2"/><path d="M8.5 20.5h7M12 17v3.5"/>',
+    refresh: '<path d="M20 11a8 8 0 0 0-14.3-4.6L4 8M4 4v4h4M4 13a8 8 0 0 0 14.3 4.6L20 16M20 20v-4h-4"/>',
     grid: '<rect x="4" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"/>'
   };
 
-  /* 4 groups, 17 modules + overview. */
+  /* Navigation. Each module opens the real academy page (same code as panel.puttclub.ir)
+     inside the embedded academy frame: { page, tab } → APP.go(page) [+ management tab]. */
+  const M = (slug, title, icon, desc, page, tab) => ({ slug, title, icon, desc, target: { page, tab: tab || '' } });
   const GROUPS = [
     {
       id: 'academy', title: 'پنل مدیریت', sub: 'آکادمی، بازیکنان و برنامه‌ها', icon: 'crown',
       items: [
         { slug: 'overview', title: 'نمای کلی', icon: 'overview', desc: 'خلاصهٔ وضعیت آکادمی' },
-        { slug: 'academy-settings', title: 'تنظیمات آکادمی', icon: 'gear', desc: 'نام، لوگو، دامنه و پس‌زمینه‌ها' },
-        { slug: 'players', title: 'بازیکنان', icon: 'players', desc: 'پروفایل، هندیکپ و وضعیت عضویت' },
-        { slug: 'programs', title: 'دوره‌ها', icon: 'book', desc: 'برنامه‌ها و پلن‌های آموزشی' },
-        { slug: 'calendar', title: 'تقویم', icon: 'calendar', desc: 'رویدادها و زمان‌بندی جلسات' },
-        { slug: 'users', title: 'یوزرها', icon: 'user', desc: 'حساب‌ها، نقش‌ها و اشتراک‌ها' }
+        M('academy-settings', 'تنظیمات آکادمی', 'gear', 'نام، لوگو، دامنه و پس‌زمینه‌ها', 'mgmt', 'academy'),
+        M('players', 'بازیکنان', 'players', 'فرم جامع، عکس، یوزر و وضعیت', 'mgmt', 'players'),
+        M('programs', 'دوره‌ها', 'book', 'دوره‌ها و تمرین‌های آموزشی', 'mgmt', 'programs'),
+        M('calendar', 'تقویم', 'calendar', 'رویدادها و زمان‌بندی', 'mgmt', 'calendar'),
+        M('reception', 'رسپشن', 'bell', 'لابی و رسپشن آکادمی', 'mgmt', 'reception')
       ]
     },
     {
       id: 'competition', title: 'مسابقات', sub: 'زمین‌ها، رقابت‌ها و نتایج', icon: 'trophy',
       items: [
-        { slug: 'courses', title: 'زمین‌ها', icon: 'flag', desc: 'زمین‌ها، پار و فاصلهٔ حفره‌ها' },
-        { slug: 'tournaments', title: 'مسابقات', icon: 'trophy', desc: 'ساخت مسابقه، قوانین و جوایز' },
-        { slug: 'results', title: 'نتایج', icon: 'chart', desc: 'کارت امتیاز و رده‌بندی' },
-        { slug: 'battle', title: 'نبرد میدان‌ها', icon: 'swords', desc: 'رقابت تیمی میدان‌ها' }
+        M('courses', 'زمین‌ها', 'flag', 'زمین، لوکیشن و نقشهٔ ماهواره‌ای', 'mgmt', 'courses'),
+        M('tournaments', 'مسابقات', 'trophy', 'ساخت مسابقه، قوانین و جوایز', 'mgmt', 'tournaments'),
+        M('results', 'نتایج', 'chart', 'کارت امتیاز و رده‌بندی', 'mgmt', 'results'),
+        M('battle', 'نبرد میدان‌ها', 'swords', 'تیم‌ها و مسابقات نبرد', 'mgmt', 'battle')
       ]
     },
     {
-      id: 'avatar', title: 'آواتار و فروشگاه', sub: 'سکه، آیتم‌ها و دنیای آواتار', icon: 'sparkle',
+      id: 'avatar', title: 'آواتار و فروشگاه', sub: 'سکه، رنک، آیتم‌ها و دنیای آواتار', icon: 'sparkle',
       items: [
-        { slug: 'coin-requests', title: 'درخواست سکه', icon: 'coin', desc: 'تأیید و پرداخت سکه' },
-        { slug: 'avatar-colors', title: 'رنگ و آواتار', icon: 'palette', desc: 'پوسته، رنگ رتبه و ظاهر' },
-        { slug: 'avatar-shop', title: 'فروشگاه آواتار', icon: 'bag', desc: 'محصولات و قیمت‌گذاری سکه‌ای' },
-        { slug: 'avatar-land', title: 'سرزمین آواتارها', icon: 'globe', desc: 'مکان‌ها و سبک نقشه' },
-        { slug: 'items', title: 'ویرایش آیتم‌ها', icon: 'puzzle', desc: 'ساخت و ویرایش آیتم‌ها' }
+        M('coin-requests', 'درخواست سکه', 'coin', 'تأیید و پرداخت سکه', 'mgmt', 'coins'),
+        M('honor', 'رنک و آواتار', 'palette', 'Honor Rank، دیویژن‌ها و ظاهر', 'mgmt', 'honor'),
+        M('avatar-shop', 'فروشگاه آواتار', 'bag', 'آیتم‌ها و قیمت سکه‌ای', 'mgmt', 'shop'),
+        M('avatar-land', 'سرزمین آواتارها', 'globe', 'مکان‌ها و سبک نقشه', 'mgmt', 'avatars'),
+        M('labels', 'ویرایش آیتم‌ها', 'puzzle', 'نام بخش‌ها و برچسب‌های سایت', 'mgmt', 'labels')
       ]
     },
     {
-      id: 'comms', title: 'ارتباطات', sub: 'پشتیبانی، تماس و اطلاعات', icon: 'chat',
+      id: 'comms', title: 'ارتباطات', sub: 'تماس، اطلاعات و پیام به اعضا', icon: 'chat',
       items: [
-        { slug: 'support', title: 'پشتیبان', icon: 'lifebuoy', desc: 'پیام‌ها و درخواست‌های اعضا' },
-        { slug: 'contact', title: 'تماس با ما', icon: 'phone', desc: 'راه‌های ارتباطی سایت' },
-        { slug: 'info', title: 'اطلاعات', icon: 'info', desc: 'محتوای اطلاعات سایت' }
+        M('contact', 'تماس با ما', 'phone', 'راه‌های ارتباطی سایت', 'mgmt', 'contact'),
+        M('info', 'اطلاعات', 'info', 'محتوای اطلاعات آکادمی', 'mgmt', 'info'),
+        M('messages', 'ارسال پیام', 'send', 'پیام پاپ‌آپ و ایمیل به اعضا', 'messages')
+      ]
+    },
+    {
+      id: 'system', title: 'حساب‌ها و سیستم', sub: 'یوزرها، اشتراک‌ها و پشتیبان', icon: 'shield',
+      items: [
+        M('users', 'یوزرها', 'user', 'حساب‌ها و دسترسی‌ها', 'mgmt', 'users'),
+        M('subs', 'اشتراک‌ها', 'card', 'پلن، تمدید و وضعیت پرداخت', 'subs'),
+        M('display-settings', 'تنظیمات نمایش', 'sliders', 'نمودارها و آنچه اعضا می‌بینند', 'settings'),
+        M('backup', 'پشتیبان آکادمی', 'download', 'نسخهٔ پشتیبان و بازگردانی', 'backup')
+      ]
+    },
+    {
+      id: 'views', title: 'داشبورد آکادمی', sub: 'صفحات نمایشی و تحلیلی', icon: 'chart',
+      items: [
+        M('v-cmd', 'فرماندهی', 'compass', 'داشبورد اصلی آکادمی', 'cmd'),
+        M('v-race', 'رقابت فصل', 'flag', 'جدول و روند فصل', 'race'),
+        M('v-player', 'مرکز بازیکن', 'user', 'تحلیل هر بازیکن', 'player'),
+        M('v-match', 'فرماندهی مسابقه', 'trophy', 'جزئیات هر مسابقه', 'match'),
+        M('v-course', 'هوش زمین', 'globe', 'تحلیل زمین و حفره‌ها', 'course'),
+        M('v-records', 'رکوردها', 'chart', 'رکوردهای فصل', 'records'),
+        M('v-cal', 'تقویم فصل', 'calendar', 'تقویم شمسی و رویدادها', 'cal'),
+        M('v-tv', 'نمایش تلویزیونی', 'tv', 'حالت نمایش روی تلویزیون', 'tv'),
+        M('v-battle', 'میدان نبرد', 'swords', 'نمای نبرد میدان‌ها', 'battle'),
+        M('v-academy', 'پنل آکادمی', 'book', 'نمای آکادمی', 'academy'),
+        M('v-avatarland', 'سرزمین آواتارها', 'sparkle', 'نمای سرزمین آواتارها', 'avatarland')
       ]
     }
   ];
 
-  const DAILY = ['players', 'coin-requests', 'tournaments', 'results', 'calendar', 'programs', 'users', 'academy-settings'];
+  const DAILY = ['players', 'coin-requests', 'tournaments', 'results', 'calendar', 'subs', 'messages', 'academy-settings'];
 
   const INDEX = {};
   GROUPS.forEach(group => group.items.forEach(item => { INDEX[item.slug] = { item, group }; }));
-  const MODULE_COUNT = Object.keys(INDEX).length - 1;
+  const MGMT_COUNT = GROUPS.reduce((n, g) => n + (g.id === 'views' ? 0 : g.items.filter(i => i.target).length), 0);
 
   const faNum = new Intl.NumberFormat('fa-IR');
   const $ = (s, root = document) => root.querySelector(s);
@@ -96,8 +131,22 @@
     return span;
   }
   function link(slug) { return slug === 'overview' ? '#/overview' : '#/m/' + slug; }
+  function slugFor(target) {
+    if (!target) return null;
+    let fallback = null;
+    for (const key of Object.keys(INDEX)) {
+      const t = INDEX[key].item.target;
+      if (!t || t.page !== target.page) continue;
+      if (t.tab === (target.tab || '')) return key;
+      if (!fallback && (!t.tab || target.page !== 'mgmt')) fallback = key;
+    }
+    return fallback;
+  }
 
-  const state = { mounted: false, openGroup: 'academy', stats: null, statsError: false, options: {} };
+  const state = {
+    mounted: false, openGroup: 'academy', stats: null, statsError: false, options: {},
+    frame: null, frameReady: false, frameFailed: false, lastPull: 0, syncTimer: null, slug: 'overview'
+  };
 
   /* ---------- sidebar ---------- */
   function renderNav(activeSlug) {
@@ -178,8 +227,7 @@
   function statCard(opts) {
     const card = el('article', 'stat-card' + (opts.alert ? ' is-alert' : ''));
     card.append(icon(opts.icon, 'stat-icon'));
-    const value = el('strong', 'stat-value', opts.value);
-    card.append(value, el('span', 'stat-label', opts.label));
+    card.append(el('strong', 'stat-value', opts.value), el('span', 'stat-label', opts.label));
     const a = el('a', 'stat-action');
     a.href = link(opts.slug);
     a.append(el('span', '', opts.action), icon('arrow', 'stat-action-ico'));
@@ -192,13 +240,13 @@
     const copy = el('div', 'hero-copy');
     const h1 = el('h1');
     h1.append(icon('crown', 'hero-crown'), el('span', '', 'مرکز مدیریت آکادمی'));
-    copy.append(h1, el('p', '', 'بازیکنان، مسابقات، فروشگاه آواتار و ارتباطات پات‌کلاب، همه در یک ساختار منظم'));
+    copy.append(h1, el('p', '', 'همهٔ بخش‌های مدیریت پنل آکادمی، با همان داده‌ها و همگام با panel.puttclub.ir'));
     const chips = el('div', 'hero-chips');
-    const c1 = el('span', 'hero-chip', faNum.format(MODULE_COUNT) + ' بخش مدیریتی');
+    chips.append(el('span', 'hero-chip', faNum.format(MGMT_COUNT) + ' بخش مدیریتی'));
     const c2 = el('span', 'hero-chip is-ok');
-    c2.append(icon('check', 'hero-chip-ico'), el('span', '', 'عملیات پایدار'));
-    chips.append(c1, c2);
-    if (state.options.preview) chips.append(el('span', 'hero-chip is-preview', 'پیش‌نمایش محلی'));
+    c2.append(icon('check', 'hero-chip-ico'), el('span', '', 'همگام با پنل آکادمی'));
+    chips.append(c2);
+    if (state.options.preview) chips.append(el('span', 'hero-chip is-preview', 'پیش‌نمایش محلی — فقط خواندنی'));
     copy.append(chips);
     hero.append(copy);
     root.append(hero);
@@ -208,10 +256,10 @@
     const s = state.stats;
     const v = (n) => (s ? faNum.format(n) : (state.statsError ? '—' : '…'));
     stats.append(
-      statCard({ icon: 'user', value: v(s && s.subs), label: 'عضو دارای اشتراک', action: 'یوزرها', slug: 'users' }),
-      statCard({ icon: 'shield', value: v(s && s.soon), label: 'اشتراک نزدیک به پایان (۳۰ روز)', action: 'پیگیری فوری', slug: 'users', alert: true }),
+      statCard({ icon: 'user', value: v(s && s.subs), label: 'عضو دارای اشتراک', action: 'اشتراک‌ها', slug: 'subs' }),
+      statCard({ icon: 'shield', value: v(s && s.soon), label: 'اشتراک نزدیک به پایان (۳۰ روز)', action: 'پیگیری فوری', slug: 'subs', alert: true }),
       statCard({ icon: 'trophy', value: v(s && s.tournaments), label: 'مسابقهٔ ثبت‌شده', action: 'مسابقات', slug: 'tournaments' }),
-      statCard({ icon: 'flag', value: v(s && s.courses), label: 'زمین فعال', action: 'زمین‌ها', slug: 'courses' })
+      statCard({ icon: 'flag', value: v(s && s.courses), label: 'زمین ثبت‌شده', action: 'زمین‌ها', slug: 'courses' })
     );
     root.append(stats);
     if (state.statsError) root.append(el('p', 'soft-note', 'خلاصهٔ آمار در دسترس نبود؛ اتصال یا دسترسی را بررسی کنید.'));
@@ -231,39 +279,138 @@
     });
   }
 
-  /* ---------- module page ---------- */
-  function renderModule(root, slug) {
+  /* ---------- module page: compact header + embedded academy ---------- */
+  function renderModuleBar(root, slug) {
     const { item, group } = INDEX[slug];
-    const head = el('section', 'module-hero');
+    const bar = el('section', 'module-bar');
+    bar.append(icon(item.icon, 'module-bar-icon'));
+    const t = el('div', 'module-bar-text');
     const crumbs = el('nav', 'crumbs');
     crumbs.setAttribute('aria-label', 'مسیر');
     const home = el('a', '', 'نمای کلی');
     home.href = '#/overview';
     crumbs.append(home, el('span', 'sep', '/'), el('span', '', group.title), el('span', 'sep', '/'), el('b', '', item.title));
-    const row = el('div', 'module-hero-row');
-    row.append(icon(item.icon, 'module-hero-icon'));
-    const t = el('div');
-    t.append(el('h1', '', item.title), el('p', '', item.desc));
-    row.append(t, el('span', 'module-status', 'در حال آماده‌سازی'));
-    head.append(crumbs, row);
-    root.append(head);
+    t.append(crumbs, el('h1', '', item.title));
+    bar.append(t);
+    const actions = el('div', 'module-bar-actions');
+    const sync = el('span', 'sync-chip');
+    sync.id = 'moduleSync';
+    sync.append(el('i', 'sync-dot'), el('span', '', 'در حال اتصال…'));
+    const pullBtn = el('button', 'icon-btn');
+    pullBtn.type = 'button';
+    pullBtn.title = 'دریافت آخرین تغییرات از پنل آکادمی';
+    pullBtn.setAttribute('aria-label', pullBtn.title);
+    pullBtn.append(icon('refresh', 'icon-btn-ico'));
+    pullBtn.addEventListener('click', () => {
+      pullBtn.disabled = true;
+      cloudPull(true).then(() => { openInFrame(slug, true); }).finally(() => { pullBtn.disabled = false; });
+    });
+    actions.append(sync, pullBtn);
+    bar.append(actions);
+    root.append(bar);
+    updateSync();
+  }
 
-    const body = el('section', 'panel-card module-empty');
-    body.append(icon('grid', 'empty-ico'), el('h2', '', 'این بخش در منو ثبت شده است'), el('p', '', 'عملیات مدیریتی «' + item.title + '» هنوز پیاده‌سازی نشده است. ساختار منو، مسیر و دسترسی آماده است.'));
-    const back = el('a', 'ghost-btn');
-    back.href = '#/overview';
-    back.append(icon('arrow', 'ghost-ico'), el('span', '', 'بازگشت به نمای کلی'));
-    body.append(back);
-    root.append(body);
+  /* ---------- embedded academy frame ---------- */
+  function bridge() {
+    try { return state.frame && state.frame.contentWindow && state.frame.contentWindow.PUTT_BRIDGE; } catch (_) { return null; }
+  }
 
-    const siblings = group.items.filter(i => i.slug !== slug && i.slug !== 'overview');
-    if (siblings.length) {
-      const sec = sectionCard('سایر بخش‌های «' + group.title + '»', group.sub);
-      const g = el('div', 'cmd-grid');
-      siblings.forEach(i => g.append(commandCard(i.slug)));
-      sec.append(g);
-      root.append(sec);
+  function ensureFrame() {
+    const host = $('#academyHost');
+    if (!host || state.frame) return;
+    host.textContent = '';
+    const loading = el('div', 'frame-loading');
+    loading.id = 'frameLoading';
+    loading.append(el('span', 'spinner'), el('b', '', 'در حال بارگذاری پنل آکادمی…'), el('small', '', 'همان برنامه و همان داده‌های panel.puttclub.ir'));
+    const frame = document.createElement('iframe');
+    frame.id = 'academyFrame';
+    frame.title = 'پنل مدیریت آکادمی';
+    frame.src = './academy/';
+    frame.setAttribute('referrerpolicy', 'same-origin');
+    host.append(frame, loading);
+    state.frame = frame;
+    state.frameReady = false;
+    state.frameFailed = false;
+  }
+
+  function destroyFrame() {
+    const host = $('#academyHost');
+    if (host) { host.textContent = ''; host.hidden = true; }
+    state.frame = null;
+    state.frameReady = false;
+    if (state.syncTimer) { clearInterval(state.syncTimer); state.syncTimer = null; }
+  }
+
+  function cloudPull(force) {
+    const b = bridge();
+    if (!b || !state.frameReady) return Promise.resolve();
+    if (!force && Date.now() - state.lastPull < 20000) return Promise.resolve();
+    state.lastPull = Date.now();
+    const timeout = new Promise(res => setTimeout(res, 5000));
+    return Promise.race([b.pull().catch(() => {}), timeout]).then(updateSync);
+  }
+
+  function openInFrame(slug, skipPull) {
+    const entry = INDEX[slug];
+    if (!entry || !entry.item.target) return;
+    const b = bridge();
+    if (!b || !state.frameReady) return; /* frameReady() will open the current route */
+    const go = () => { if (currentSlug() === slug) b.open(entry.item.target.page, entry.item.target.tab); };
+    if (skipPull) go(); else cloudPull(false).then(go);
+  }
+
+  function syncLabel(st) {
+    if (!state.frameReady) return state.frameFailed ? ['err', 'اتصال به آکادمی برقرار نشد'] : ['wait', 'در حال اتصال به آکادمی…'];
+    if (!st) return ['wait', 'وضعیت همگام‌سازی نامشخص'];
+    if (state.options.preview) return ['busy', 'پیش‌نمایش — ارسال به ابر غیرفعال'];
+    if (st.phase === 'error') return ['err', 'خطای همگام‌سازی — داده در صف محفوظ است'];
+    if (st.phase === 'off') return ['err', 'همگام‌سازی ابری خاموش است'];
+    if (st.phase === 'pushing') return ['busy', 'در حال ارسال به پنل آکادمی…'];
+    if (st.phase === 'pulling') return ['busy', 'در حال دریافت از پنل آکادمی…'];
+    if (st.pending > 0) return ['busy', faNum.format(st.pending) + ' تغییر در صف ارسال'];
+    return ['ok', 'همگام با پنل آکادمی'];
+  }
+
+  function updateSync() {
+    const b = bridge();
+    const [kind, text] = syncLabel(b && state.frameReady ? b.cloudStatus() : null);
+    ['#moduleSync', '#systemStatus'].forEach(sel => {
+      const node = $(sel);
+      if (!node) return;
+      node.dataset.sync = kind;
+    });
+    const chip = $('#moduleSync span');
+    if (chip) chip.textContent = text;
+    const side = $('#syncStatusText');
+    if (side) side.textContent = text;
+  }
+
+  /* called from the academy frame (academy-bridge/post.js) */
+  function frameReady() {
+    state.frameReady = true;
+    state.lastPull = Date.now(); /* the academy pulls on start */
+    const loading = $('#frameLoading');
+    if (loading) loading.remove();
+    if (!state.syncTimer) state.syncTimer = setInterval(updateSync, 2500);
+    updateSync();
+    const slug = currentSlug();
+    if (slug !== 'overview') openInFrame(slug, true);
+  }
+  function frameFailed() {
+    state.frameFailed = true;
+    const loading = $('#frameLoading');
+    if (loading) {
+      loading.textContent = '';
+      loading.append(el('b', '', 'پنل آکادمی بارگذاری نشد'), el('small', '', 'صفحه را تازه کنید یا دوباره وارد شوید.'));
     }
+    updateSync();
+  }
+  function onFrameNav(target) {
+    const slug = slugFor(target);
+    if (!slug || slug === currentSlug()) return;
+    try { history.replaceState(null, '', link(slug)); } catch (_) { location.hash = link(slug); return; }
+    render(true);
   }
 
   /* ---------- routing ---------- */
@@ -272,16 +419,27 @@
     return m && INDEX[m[1]] ? m[1] : 'overview';
   }
 
-  function render() {
-    const root = $('#dashContent');
-    if (!root || $('#dashboardView').hidden) return;
+  function render(fromFrame) {
+    const page = $('#dashPage');
+    const host = $('#academyHost');
+    if (!page || $('#dashboardView').hidden) return;
     const slug = currentSlug();
+    state.slug = slug;
     const entry = INDEX[slug];
-    if (entry && state.openGroup !== entry.group.id && slug !== 'overview') state.openGroup = entry.group.id;
+    if (entry && slug !== 'overview') state.openGroup = entry.group.id;
     renderNav(slug);
-    root.textContent = '';
-    if (slug === 'overview') renderOverview(root); else renderModule(root, slug);
-    document.title = (slug === 'overview' ? 'کنسول مدیریت' : entry.item.title) + ' — پات‌کلاب';
+    page.textContent = '';
+    const isModule = slug !== 'overview';
+    $('#dashContent').classList.toggle('is-module', isModule);
+    if (host) host.hidden = !isModule;
+    if (isModule) {
+      renderModuleBar(page, slug);
+      ensureFrame();
+      if (!fromFrame) openInFrame(slug);
+    } else {
+      renderOverview(page);
+    }
+    document.title = (isModule ? entry.item.title : 'کنسول مدیریت') + ' — پات‌کلاب';
   }
 
   /* ---------- mobile drawer ---------- */
@@ -296,7 +454,8 @@
   async function loadStats() {
     if (state.options.preview) {
       state.stats = { subs: 8, soon: 7, tournaments: 7, courses: 2, events: 25 };
-      return render();
+      if (currentSlug() === 'overview') render();
+      return;
     }
     if (typeof state.options.loadStore !== 'function') return;
     try {
@@ -314,7 +473,11 @@
     state.statsError = false;
     if (!state.mounted) {
       state.mounted = true;
-      window.addEventListener('hashchange', () => { render(); const c = $('#dashContent'); if (c) { c.focus({ preventScroll: true }); window.scrollTo({ top: 0 }); } });
+      window.addEventListener('hashchange', () => {
+        render();
+        const c = $('#dashContent');
+        if (c) { c.focus({ preventScroll: true }); window.scrollTo({ top: 0 }); }
+      });
       const toggle = $('#navToggle');
       toggle.addEventListener('click', () => {
         const open = $('#dashboardView').classList.toggle('nav-open');
@@ -322,10 +485,18 @@
       });
       $('#navBackdrop').addEventListener('click', closeDrawer);
       document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+      window.addEventListener('focus', () => { if (currentSlug() === 'overview') cloudPull(false); });
     }
     render();
+    /* Load the academy in the background so modules open instantly and stay in sync. */
+    ensureFrame();
     loadStats();
   }
 
-  window.PuttDashboard = Object.freeze({ mount });
+  function unmount() {
+    destroyFrame();
+    try { localStorage.removeItem('ga_session'); } catch (_) {}
+  }
+
+  window.PuttDashboard = Object.freeze({ mount, unmount, frameReady, frameFailed, onFrameNav });
 })();

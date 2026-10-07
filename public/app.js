@@ -153,6 +153,11 @@
     if (avatar && email) avatar.textContent = email.charAt(0).toUpperCase();
     startClock();
     updateSystemStatus();
+    /* Identity handed to the embedded academy (same-origin frame). Set only after
+       Supabase Auth + adminpanel_access verification, or in the local preview. */
+    window.__PUTT_ADMIN = Object.freeze({
+      email: email || 'admin', role: (session && session.role) || 'admin', preview: !!options.preview
+    });
     window.PuttDashboard.mount({
       preview: !!options.preview,
       loadStore: options.preview ? null : loadStoreSummary
@@ -165,6 +170,8 @@
     loginView.hidden = false;
     document.body.classList.remove('is-dashboard');
     if (refreshTimer) clearTimeout(refreshTimer);
+    try { delete window.__PUTT_ADMIN; } catch (_) { window.__PUTT_ADMIN = undefined; }
+    if (window.PuttDashboard && window.PuttDashboard.unmount) window.PuttDashboard.unmount();
     startClock();
   }
 

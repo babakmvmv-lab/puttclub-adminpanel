@@ -108,12 +108,15 @@
         <div id="systemStatus" class="sidebar-status" aria-live="polite">
           <span class="status-dot" aria-hidden="true"></span>
           <b id="systemStatusText">سیستم آنلاین</b>
-          <small>منطقهٔ زمانی تهران</small>
+          <small id="syncStatusText">در حال اتصال به آکادمی…</small>
         </div>
       </aside>
       <button id="navBackdrop" class="nav-backdrop" type="button" aria-label="بستن منو" tabindex="-1"></button>
 
-      <main id="dashContent" class="dash-content" tabindex="-1"></main>
+      <main id="dashContent" class="dash-content" tabindex="-1">
+        <div id="dashPage" class="dash-page"></div>
+        <section id="academyHost" class="academy-host" aria-label="پنل آکادمی" hidden></section>
+      </main>
     </div>
   </div>
 </body>
