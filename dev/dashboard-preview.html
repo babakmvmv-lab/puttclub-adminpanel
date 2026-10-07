@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>پیش‌نمایش پوستهٔ خالی — پات‌کلاب</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="is-dashboard">
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="پوستهٔ منوی مدیریت">
+      <div class="sidebar-brand"><span class="brand-emblem small" aria-hidden="true"><span></span></span><div><b>PUTT CLUB</b><small>پنل مدیریت</small></div></div>
+      <div class="sidebar-divider"></div><div class="menu-caption">ناوبری</div><nav class="sidebar-menu" aria-label="منوی اصلی"></nav>
+      <div class="sidebar-bottom"><span class="online-dot"></span><span>محیط اختصاصی مدیریت</span></div>
+    </aside>
+    <main class="main-panel">
+      <header class="topbar">
+        <div class="topbar-start"><button class="menu-toggle" type="button" aria-label="بازکردن منو"><span></span><span></span><span></span></button><div class="topbar-title"><span class="title-mark"></span><div><b>پنل مدیریت آکادمی</b><small>PUTT CLUB · ADMIN</small></div></div></div>
+        <div class="topbar-center" aria-label="تاریخ و ساعت تهران"><div class="date-chip"><span class="chip-icon" aria-hidden="true">◷</span><div><small>تاریخ امروز</small><b id="tehranDate">—</b></div></div><div class="clock-chip"><span class="clock-pulse" aria-hidden="true"></span><div><small>ساعت تهران</small><b id="tehranTime">—</b></div></div></div>
+        <div class="topbar-end"><span class="manager-label">پیش‌نمایش پوسته</span><button class="logout-btn" type="button" aria-label="خروج از پیش‌نمایش"><span aria-hidden="true">↪</span><b>خروج</b></button></div>
+      </header>
+      <section class="workspace" aria-label="فضای خالی پنل مدیریت"></section>
+      <footer class="workspace-footer"><span>PUTT CLUB</span><span>TEHRAN · IRAN</span></footer>
+    </main>
+  </div>
+  <script>
+    const dateFmt = new Intl.DateTimeFormat('fa-IR-u-ca-persian',{timeZone:'Asia/Tehran',weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    const timeFmt = new Intl.DateTimeFormat('fa-IR',{timeZone:'Asia/Tehran',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
+    function tick(){const now=new Date();document.querySelector('#tehranDate').textContent=dateFmt.format(now);document.querySelector('#tehranTime').textContent=timeFmt.format(now)}
+    tick();setInterval(tick,1000);
+  </script>
+</body>
+</html>

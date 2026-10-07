@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#08120f">
+  <meta name="description" content="پنل مدیریت اختصاصی باشگاه گلف پات‌کلاب">
+  <title>ورود مدیریت — پات‌کلاب</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%230b2119'/%3E%3Cpath d='M17 48V13h3v35M21 15c12-7 20 6 31 0v19c-11 6-19-7-31 0' fill='none' stroke='%23d5b66a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./config.js"></script>
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <main id="loginView" class="login-page">
+    <section class="login-visual" aria-label="نمای گلف پات‌کلاب">
+      <div class="visual-scrim"></div>
+      <div class="visual-brand">
+        <span class="brand-emblem" aria-hidden="true"><span></span></span>
+        <span class="brand-wordmark"><b>PUTT CLUB</b><small>GOLF ACADEMY</small></span>
+      </div>
+      <div class="visual-copy">
+        <span class="eyebrow"><i></i> فضای اختصاصی مدیریت</span>
+        <h1>مدیریت باشگاه،<br><em>با آرامش و دقت.</em></h1>
+        <p>مرکز مدیریت آکادمی گلف پات‌کلاب</p>
+      </div>
+      <div class="visual-caption"><span>PUTT CLUB · PRIVATE ADMINISTRATION</span><span>TEHRAN · IRAN</span></div>
+    </section>
+
+    <section class="login-side">
+      <div class="login-topline">
+        <span class="secure-label"><i></i> دسترسی مدیران</span>
+        <span class="login-time" id="loginClock" aria-label="ساعت تهران">--:--</span>
+      </div>
+      <div class="login-card-wrap">
+        <div class="login-card">
+          <div class="card-brand">
+            <span class="brand-emblem small" aria-hidden="true"><span></span></span>
+            <div><b>پنل مدیریت</b><small>پات‌کلاب</small></div>
+          </div>
+          <div class="card-heading">
+            <span class="eyebrow">خوش آمدید</span>
+            <h2>ورود به پنل</h2>
+            <p>برای ادامه، اطلاعات حساب مدیر را وارد کنید.</p>
+          </div>
+          <form id="loginForm" autocomplete="on" novalidate>
+            <label class="field-label" for="loginEmail">ایمیل مدیر</label>
+            <div class="input-wrap">
+              <span class="field-icon" aria-hidden="true">✉</span>
+              <input id="loginEmail" name="email" type="email" autocomplete="username" inputmode="email" placeholder="name@example.com" required>
+            </div>
+            <label class="field-label password-label" for="loginPassword">رمز عبور</label>
+            <div class="input-wrap">
+              <span class="field-icon lock-icon" aria-hidden="true">●</span>
+              <input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="رمز عبور حساب مدیر" required>
+              <button type="button" id="togglePassword" class="reveal-btn" aria-label="نمایش رمز عبور" title="نمایش/پنهان‌کردن رمز">◉</button>
+            </div>
+            <div id="loginMessage" class="form-message" role="status" aria-live="polite" hidden></div>
+            <button id="loginSubmit" class="primary-btn" type="submit">
+              <span>ورود امن</span><b aria-hidden="true">←</b>
+            </button>
+          </form>
+          <div class="login-foot"><span class="shield-icon" aria-hidden="true">◆</span><span>ورود امن و مخصوص مدیران مجاز</span></div>
+        </div>
+        <div class="login-help">اگر دسترسی ندارید، با مدیر اصلی آکادمی تماس بگیرید.</div>
+      </div>
+      <footer class="side-footer"><span>© PUTT CLUB</span><span>پنل مستقل مدیریت</span></footer>
+    </section>
+  </main>
+
+  <div id="dashboardView" class="app-shell" hidden>
+    <aside id="sidebar" class="sidebar" aria-label="پوستهٔ منوی مدیریت">
+      <div class="sidebar-brand">
+        <span class="brand-emblem small" aria-hidden="true"><span></span></span>
+        <div><b>PUTT CLUB</b><small>پنل مدیریت</small></div>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="menu-caption">ناوبری</div>
+      <nav class="sidebar-menu" aria-label="منوی اصلی"><!-- عمداً بدون آیتم؛ ساختار برای مرحلهٔ بعد آماده است. --></nav>
+      <div class="sidebar-bottom"><span class="online-dot"></span><span>محیط اختصاصی مدیریت</span></div>
+    </aside>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <div class="topbar-start">
+          <button id="menuToggle" class="menu-toggle" type="button" aria-label="بازکردن منو" aria-expanded="false"><span></span><span></span><span></span></button>
+          <div class="topbar-title"><span class="title-mark"></span><div><b>پنل مدیریت آکادمی</b><small>PUTT CLUB · ADMIN</small></div></div>
+        </div>
+        <div class="topbar-center" aria-label="تاریخ و ساعت تهران">
+          <div class="date-chip"><span class="chip-icon" aria-hidden="true">◷</span><div><small>تاریخ امروز</small><b id="tehranDate">—</b></div></div>
+          <div class="clock-chip"><span class="clock-pulse" aria-hidden="true"></span><div><small>ساعت تهران</small><b id="tehranTime">—</b></div></div>
+        </div>
+        <div class="topbar-end">
+          <span id="managerEmail" class="manager-label">مدیر</span>
+          <button id="logoutBtn" class="logout-btn" type="button"><span aria-hidden="true">↪</span><b>خروج</b></button>
+        </div>
+      </header>
+      <section class="workspace" aria-label="فضای خالی پنل مدیریت"></section>
+      <footer class="workspace-footer"><span>PUTT CLUB</span><span>TEHRAN · IRAN</span></footer>
+    </main>
+    <button id="sidebarBackdrop" class="sidebar-backdrop" type="button" aria-label="بستن منو"></button>
+  </div>
+</body>
+</html>

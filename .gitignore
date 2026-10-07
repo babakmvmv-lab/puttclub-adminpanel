@@ -1,0 +1,7 @@
+# Local/private project configuration; never commit tokens or secrets.
+.env
+.env.*
+!.env.example
+*.local
+__pycache__/
+.DS_Store
