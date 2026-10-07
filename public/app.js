@@ -32,6 +32,15 @@
     if (loginTime) loginTime.textContent = shortTehranTime.format(now);
   }
 
+  function updateSystemStatus() {
+    const status = $('#systemStatus');
+    const label = $('#systemStatusText');
+    if (!status || !label) return;
+    const online = navigator.onLine !== false;
+    status.classList.toggle('is-offline', !online);
+    label.textContent = online ? 'سیستم آنلاین' : 'سیستم آفلاین';
+  }
+
   function startClock() {
     updateClock();
     if (clockTimer) clearInterval(clockTimer);
@@ -135,8 +144,10 @@
     dashboardView.hidden = false;
     document.body.classList.add('is-dashboard');
     const email = session && session.user && session.user.email;
-    $('#managerEmail').textContent = email || 'مدیر';
+    const manager = $('#managerEmail');
+    if (manager) manager.textContent = email || 'مدیر';
     startClock();
+    updateSystemStatus();
   }
 
   function showLogin() {
@@ -178,7 +189,6 @@
   async function signOut() {
     const session = loadSession();
     clearSession();
-    document.body.classList.remove('nav-open');
     showLogin();
     if (session && session.access_token && authIsConfigured()) {
       try { await postAuth('logout', {}, session.access_token); } catch (_) {}
@@ -222,18 +232,24 @@
 
   $('#logoutBtn').addEventListener('click', signOut);
 
-  const menuToggle = $('#menuToggle');
-  const backdrop = $('#sidebarBackdrop');
-  function closeMenu() {
-    dashboardView.classList.remove('nav-open');
-    menuToggle.setAttribute('aria-expanded', 'false');
-  }
-  menuToggle.addEventListener('click', () => {
-    const open = dashboardView.classList.toggle('nav-open');
-    menuToggle.setAttribute('aria-expanded', String(open));
+  const moduleButtons = Array.from(document.querySelectorAll('.module-tile'));
+  moduleButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      moduleButtons.forEach((item) => {
+        item.classList.remove('is-active');
+        item.removeAttribute('aria-current');
+      });
+      button.classList.add('is-active');
+      button.setAttribute('aria-current', 'page');
+      const title = $('#moduleTitle');
+      const message = $('#moduleMessage');
+      if (title) title.textContent = button.dataset.module || 'بخش مدیریت';
+      if (message) message.textContent = 'این گزینه در منوی پنل ثبت شده است؛ عملیات مدیریتی آن هنوز پیاده‌سازی نشده است.';
+    });
   });
-  backdrop.addEventListener('click', closeMenu);
-  window.addEventListener('resize', () => { if (window.innerWidth > 820) closeMenu(); });
+
+  window.addEventListener('online', updateSystemStatus);
+  window.addEventListener('offline', updateSystemStatus);
 
   startClock();
   if (!isSecureTransport()) {
