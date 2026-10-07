@@ -156,7 +156,10 @@
     /* Identity handed to the embedded academy (same-origin frame). Set only after
        Supabase Auth + adminpanel_access verification, or in the local preview. */
     window.__PUTT_ADMIN = Object.freeze({
-      email: email || 'admin', role: (session && session.role) || 'admin', preview: !!options.preview
+      email: email || 'admin', role: (session && session.role) || 'admin', preview: !!options.preview,
+      /* current Supabase access token (kept fresh by scheduleRefresh) — the academy sends it to
+         ga-sync / ga-accounts / ga-mail, which re-verify it and adminpanel_access server-side. */
+      getToken: function () { if (options.preview) return null; const s = loadSession(); return (s && s.access_token) || null; }
     });
     window.PuttDashboard.mount({
       preview: !!options.preview,

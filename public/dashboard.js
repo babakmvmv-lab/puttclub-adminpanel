@@ -353,8 +353,8 @@
     }
   }
 
-  /* where on-device data (accounts, legacy player logins, local backups) is managed */
-  const DEVICE_SLUGS = { users: 1, players: 1, backup: 1 };
+  /* where on-device data (local backups) is managed — accounts live in the cloud since 2026-10-07 */
+  const DEVICE_SLUGS = { backup: 1 };
   function deviceNote(slug) {
     const store = window.PuttDeviceStore;
     if (!store || !DEVICE_SLUGS[slug]) return null;
@@ -364,8 +364,8 @@
     box.id = 'deviceNote';
     box.append(el('i', 'sync-dot'));
     box.append(el('span', '', s.phase === 'error'
-      ? s.error + ' — تغییرات یوزرها/پشتیبان روی پنل اعضا اعمال نمی‌شود؛ صفحه را تازه کنید.'
-      : 'یوزرها و نسخه‌های روی دستگاه، همان حافظهٔ پنل اعضا روی همین دستگاه است (طبق طراحی برنامه، روی ابر نمی‌رود).'));
+      ? s.error + ' — تغییرات نسخه‌های پشتیبان روی پنل اعضا اعمال نمی‌شود؛ صفحه را تازه کنید.'
+      : 'نسخه‌های پشتیبانِ روی دستگاه، همان حافظهٔ پنل اعضا روی همین دستگاه است (طبق طراحی برنامه، روی ابر نمی‌رود). یوزرها در ابر نگهداری می‌شوند.'));
     return box;
   }
 

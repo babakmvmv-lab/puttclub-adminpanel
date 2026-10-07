@@ -1,17 +1,17 @@
 /* adminpanel ⇄ members-panel device storage (PUTT_DEVICE_BRIDGE_V1)
    ─────────────────────────────────────────────────────────────────────
-   The academy keeps three things on the device only — never in the cloud (cloud.js SKIP):
-     ga_users          academy accounts (login for the members panel)
-     ga_player_users   legacy player credentials (managed from «بازیکنان»)
+   The academy keeps one thing on the device only — never in the cloud (cloud.js SKIP):
      ga_backup_slots   «پشتیبان آکادمی» copies kept on this device
-   They live in panel.puttclub.ir's localStorage. So that «یوزرها», «بازیکنان» and
-   «پشتیبان آکادمی» here manage exactly the list the members panel uses on this device,
-   the shell opens panel.puttclub.ir/admin-bridge.html in a hidden frame (same site →
-   same storage), copies those keys in BEFORE the academy starts, and writes every change
-   back. panel.puttclub.ir stays the source of truth. Nothing is sent to any server. */
+   (Accounts used to be device-local too — ga_users / ga_player_users. Since 2026-10-07 they
+   live in the cloud: Supabase Auth + ga_accounts, managed through the ga-accounts function,
+   so they are no longer copied between the two sites.)
+   It lives in panel.puttclub.ir's localStorage. So that «پشتیبان آکادمی» here manages exactly
+   the copies the members panel uses on this device, the shell opens
+   panel.puttclub.ir/admin-bridge.html in a hidden frame (same site → same storage), copies the
+   key in BEFORE the academy starts, and writes every change back. Nothing is sent to any server. */
 (function () {
   'use strict';
-  var KEYS = ['ga_users', 'ga_player_users', 'ga_backup_slots'];
+  var KEYS = ['ga_backup_slots'];   /* accounts moved to the cloud (ga_accounts) — ga_users/ga_player_users no longer bridged */
   var NS = 'putt-device-bridge';
   var cfg = window.ADMINPANEL_CONFIG || {};
   /* '' (local preview without a members panel) → bridge off; undefined → production URL */

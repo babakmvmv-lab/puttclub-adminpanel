@@ -14,26 +14,14 @@
   }
   window.__PUTT_IN_ADMIN = true;
 
-  /* Academy accounts are device-local by design (ga_users never syncs to the cloud).
-     The shell has already copied the members panel's list for this device in
-     (public/device-bridge.js), and every change here is written back to it — so this
-     must never create or alter an account. We only open the session as the panel's
-     main admin. An empty list behaves exactly like a fresh panel device: the academy's
-     own seedUsers creates the standard list. */
+  /* Academy accounts now live in the cloud (Supabase Auth + ga_accounts; managed through the
+     ga-accounts edge function). Inside this shell the academy signs in as the console identity
+     handed over by window.__PUTT_ADMIN (email + getToken) — auth.js reads it directly. We only
+     pre-mark the session so the academy opens straight into the app instead of its login screen.
+     Nothing here creates or alters an account, and no password is ever stored on this device. */
   try {
-    var list = [];
-    try { list = JSON.parse(localStorage.getItem('ga_users') || '[]'); } catch (e) { list = []; }
-    var who = null;
-    if (Array.isArray(list) && list.length) {
-      var ok = function (u) { return u && u.role === 'admin' && u.active !== false && String(u.user || '').trim(); };
-      var main = list.filter(function (u) { return ok(u) && u.main; })[0];
-      var any = list.filter(ok)[0];
-      who = main || any || null;
-      if (who) localStorage.setItem('ga_session', String(who.user).trim());
-      else { localStorage.removeItem('ga_session'); window.__PUTT_NO_ADMIN = true; }
-    } else {
-      localStorage.setItem('ga_session', 'admin');
-    }
+    localStorage.setItem('ga_session', String(shell.email).trim().toLowerCase());
+    localStorage.removeItem('ga_users');          /* legacy device-local list (held passwords) */
   } catch (e) {}
 
   /* Keep browser history clean: the shell owns navigation. */
